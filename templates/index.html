@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <div style="text-align: center;">
+        <h1>{% block title %} Welcome to PlantBot {% endblock %}</h1>
+        {% if isPumping == false %}
+            <img src="{{ url_for('static', filename= 'images/water-drop-empty.svg') }}" 
+                alt="water-drop" id="water-drop" onclick="changeImage()"">
+        {% else %}
+            <img src="{{ url_for('static', filename= 'images/water-drop-full.svg') }}" 
+                alt="water-drop" id="water-drop" onclick="changeImage()"">
+        {% endif %}
+    </div>
+
+    <script language="javascript">
+        function changeImage() {
+            if (document.getElementById("water-drop").getAttribute("src") == "/static/images/water-drop-empty.svg") {
+                document.getElementById("water-drop").src = "/static/images/water-drop-full.svg";
+            } else {
+                document.getElementById("water-drop").src = "/static/images/water-drop-empty.svg";
+            }
+            fetch('/switchPumping').then((response) => {
+                console.log(response);
+            });
+        }
+    </script>
+{% endblock %}
