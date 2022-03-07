@@ -14,3 +14,4 @@ production:
 
 clean:
 	rm -rf env
+	rm -rf __pycache__
