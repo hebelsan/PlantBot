@@ -7,7 +7,7 @@ app = Flask(__name__)
 # watering configs
 app.config['PUMP_RELAY_PIN'] = 23
 app.config['IS_PUMPING'] = False
-app.config['PUMP_SCHEDULE'] = [{ 'time': '12:00', 'durationSek':10 }]
+app.config['PUMP_SCHEDULE'] = [{ 'id': 'initID', 'time': '12:00', 'durationSek':10 }]
 
 scheduler = APScheduler()
 
@@ -39,6 +39,27 @@ def switchPumping():
     setPumping(not app.config['IS_PUMPING'])
     return 'Sucesss', 200
 
+@app.route('/addJob', methods=['POST'])
+def addJob():
+    content_type = request.headers.get('Content-Type')
+    if (content_type == 'application/json'):
+        json = request.json
+        matches = [d for d in app.config['PUMP_SCHEDULE'] if d['id'] == json['id']];
+        if (len(matches) == 0):
+            app.config['PUMP_SCHEDULE'].append({ 'id':json['id'], 'time':json['time'], 'durationSek':json['duration'] })
+        elif (len(matches) == 1):
+            matches[0]['time'] = json['time']
+            matches[0]['durationSek'] = json['duration']
+        elif (len(matches) > 1):
+            return 'Something went wrong', 500
+        return 'Sucesss', 200
+    return 'Wrong http header', 400
+
+@app.route('/removeJobs', methods=['POST'])
+def removeJobs():
+    scheduler.remove_all_jobs()
+    return 'Sucesss', 200
+
 def setPumping(value):
     app.config['IS_PUMPING'] = value
     if app.config['IS_PUMPING'] == False:
@@ -49,17 +70,6 @@ def setPumping(value):
 
 def testSchedule(durationSek):
     print("pump for", str(durationSek), "seconds")
-
-@app.route('/removeJobs')
-def removeJobs():
-    scheduler.remove_all_jobs()
-    return 'Sucesss', 200
-
-@app.route('/addJob')
-def addJob():
-    # jobId, time, durationSeconds
-    scheduler.add_job(id='scheduleTest', func=testSchedule, trigger='interval', seconds=3)
-    return 'Sucesss', 200
 
 
 if __name__ == '__main__':

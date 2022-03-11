@@ -3,6 +3,7 @@ let list = document.getElementById('scheduleList');
 
 function handleAddTimeTemplate() {
     let elements = generateEmptyTimeTemplate();
+    elements.listItem.setAttribute('id', uuidv4());
     list.appendChild(elements.listItem);
     addButton.disabled = true;
 }
@@ -14,6 +15,7 @@ function handleRemoveListItem(listItem) {
 }
 
 function handleAddTime(els) {
+    let durationParsed = parseInt(els.durationField.value);
     // check timeField and durationField is not empty
     if (!els.timeField.value) {
         els.errorSpan.style.display = '';
@@ -23,16 +25,31 @@ function handleAddTime(els) {
         els.errorSpan.style.display = '';
         els.errorSpan.innerHTML = 'duration required <span class="closebtn">&times;</span>';
         return
+    } else if(isNaN(durationParsed)) {
+        els.errorSpan.style.display = '';
+        els.errorSpan.innerHTML = 'duration NaN <span class="closebtn">&times;</span>';
     } else {
         els.errorSpan.style.display = 'none';
     }
-    // TODO add time scheduler job
+
     addButton.disabled = false;
-    els.crossIcon.style.display = 'none';
-    els.checkIcon.style.display = 'none';
-    els.timeField.disabled = true;
-    els.durationField.disabled = true;
-    els.configureIcon.style.display = ''
+
+    fetch('/addJob', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ 'id': els.listItem.getAttribute('id'), 'time': els.timeField.value, 'duration': durationParsed })
+    }).then(() => {
+        els.crossIcon.style.display = 'none';
+        els.checkIcon.style.display = 'none';
+        els.timeField.disabled = true;
+        els.durationField.disabled = true;
+        els.configureIcon.style.display = ''
+    }).catch((err) => {
+        els.errorSpan.style.display = '';
+        els.errorSpan.innerHTML = err.toString() + ' <span class="closebtn">&times;</span>';
+    });
 }
 
 function handleConfigureTime(els) {
@@ -88,6 +105,7 @@ function generateEmptyTimeTemplate() {
     els.errorSpan.onclick = function() { els.errorSpan.style.display = 'none'; }
     els.listItem.appendChild(els.errorSpan);
 
+    crypto.getRandomValues
     els.listItem.classList.add('timeItem');
     return els;
 }
@@ -102,6 +120,14 @@ function fillTimeSchedule(data) {
         elements.timeField.disabled = true;
         elements.durationField.value = entry.durationSek;
         elements.durationField.disabled = true;
+        elements.listItem.setAttribute('id', entry.id);
         list.appendChild(elements.listItem);
     }
-} 
+}
+
+function uuidv4() {
+    return ([1e7]+-1e3+-4e3+-8e3+-1e11).replace(/[018]/g, c =>
+      (c ^ crypto.getRandomValues(new Uint8Array(1))[0] & 15 >> c / 4).toString(16)
+    );
+  }
+  
