@@ -24,18 +24,28 @@ span.error:hover > * {
 }
 
 /* Time List */
- #scheduleList {
+#scheduleList {
     list-style: none;
     margin-top: 3em;
- }
+    padding: 0;
+}
 
- li.timeItem > * {
+li.timeItem > * {
     margin-left: 0.5em;
- }
+}
 
- input.durSecInput {
-     width: 4em;
- }
+input.timeField {
+    margin-left: 0 !important;
+    width: fit-content;
+}
+
+li.timeItem > * {
+    margin-left: 0.5em;
+}
+
+input.durSecInput {
+    width: 4em;
+}
 
 /* Buttons */
 .pretty-button {

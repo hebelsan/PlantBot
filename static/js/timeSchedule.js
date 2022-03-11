@@ -2,89 +2,106 @@ let addButton = document.getElementById('add-button');
 let list = document.getElementById('scheduleList');
 
 function handleAddTimeTemplate() {
-    let timeTemplateElement = generateTimeTemplate();
-    list.appendChild(timeTemplateElement);
+    let elements = generateEmptyTimeTemplate();
+    list.appendChild(elements.listItem);
     addButton.disabled = true;
 }
 
-function handleRemoveTimeTemplate(el) {
-    el.remove();
+function handleRemoveListItem(listItem) {
+    listItem.remove();
     // TODO remove time scheduler job
     addButton.disabled = false;
 }
 
-function handleAddTime(timeField, durationField, crossIcon, checkIcon, configureIcon, errorSpan) {
+function handleAddTime(els) {
     // check timeField and durationField is not empty
-    if (!timeField.value) {
-        errorSpan.style.display = '';
-        errorSpan.innerHTML = 'time required <span class="closebtn">&times;</span>';
+    if (!els.timeField.value) {
+        els.errorSpan.style.display = '';
+        els.errorSpan.innerHTML = 'time required <span class="closebtn">&times;</span>';
         return
-    } else if(!durationField.value) {
-        errorSpan.style.display = '';
-        errorSpan.innerHTML = 'duration required <span class="closebtn">&times;</span>';
+    } else if(!els.durationField.value) {
+        els.errorSpan.style.display = '';
+        els.errorSpan.innerHTML = 'duration required <span class="closebtn">&times;</span>';
         return
     } else {
-        errorSpan.style.display = 'none';
+        els.errorSpan.style.display = 'none';
     }
     // TODO add time scheduler job
     addButton.disabled = false;
-    crossIcon.style.display = 'none';
-    checkIcon.style.display = 'none';
-    timeField.disabled = true;
-    durationField.disabled = true;
-    configureIcon.style.display = ''
+    els.crossIcon.style.display = 'none';
+    els.checkIcon.style.display = 'none';
+    els.timeField.disabled = true;
+    els.durationField.disabled = true;
+    els.configureIcon.style.display = ''
 }
 
-function handleConfigureTime(timeField, durationField, crossIcon, checkIcon, configureIcon) {
+function handleConfigureTime(els) {
     addButton.disabled = true;
-    configureIcon.style.display = 'none';
-    crossIcon.style.display = '';
-    checkIcon.style.display = '';
-    timeField.disabled = false;
-    durationField.disabled = false;
+    els.configureIcon.style.display = 'none';
+    els.crossIcon.style.display = '';
+    els.checkIcon.style.display = '';
+    els.timeField.disabled = false;
+    els.durationField.disabled = false;
 }
 
-function generateTimeTemplate() {
-    let timeTemplate = document.createElement('li');
-    let timeField = document.createElement('input');
-    let durationLabel = document.createElement('label');
-    let durationField = document.createElement('input');
-    let crossIcon = document.createElement('span');
-    let checkIcon = document.createElement('span');
-    let configureIcon = document.createElement('span');
-    let errorSpan = document.createElement('span');
+function generateEmptyTimeTemplate() {
+    let els = {
+        'listItem': document.createElement('li'),
+        'timeField': document.createElement('input'),
+        'durationLabel': document.createElement('label'),
+        'durationField': document.createElement('input'),
+        'crossIcon': document.createElement('span'),
+        'checkIcon': document.createElement('span'),
+        'configureIcon': document.createElement('span'),
+        'errorSpan':  document.createElement('span')
+    }
     // time field
-    timeField.setAttribute('type', 'time');
-    timeTemplate.appendChild(timeField);
+    els.timeField.setAttribute('type', 'time');
+    els.timeField.classList.add('timeField');
+    els.listItem.appendChild(els.timeField);
     // duration label
-    durationLabel.appendChild(document.createTextNode('duration(sek):'))
-    timeTemplate.appendChild(durationLabel);
+    els.durationLabel.appendChild(document.createTextNode('duration(sek):'))
+    els.listItem.appendChild(els.durationLabel);
     // duration field
-    durationField.setAttribute('type', 'number');
-    durationField.classList.add('durSecInput');
-    timeTemplate.appendChild(durationField);
+    els.durationField.setAttribute('type', 'number');
+    els.durationField.classList.add('durSecInput');
+    els.listItem.appendChild(els.durationField);
     // cross icon
-    crossIcon.appendChild(document.createTextNode('\u2716'))
-    crossIcon.classList.add('cross');
-    crossIcon.onclick = function() { handleRemoveTimeTemplate(this.parentNode); };
-    timeTemplate.appendChild(crossIcon);
+    els.crossIcon.appendChild(document.createTextNode('\u2716'))
+    els.crossIcon.classList.add('cross');
+    els.crossIcon.onclick = function() { handleRemoveListItem(els.listItem); };
+    els.listItem.appendChild(els.crossIcon);
     // check icon
-    checkIcon.appendChild(document.createTextNode('\u2714'))
-    checkIcon.classList.add('check');
-    checkIcon.onclick = function() { handleAddTime(timeField, durationField, crossIcon, checkIcon, configureIcon, errorSpan); };
-    timeTemplate.appendChild(checkIcon);
+    els.checkIcon.appendChild(document.createTextNode('\u2714'))
+    els.checkIcon.classList.add('check');
+    els.checkIcon.onclick = function() { handleAddTime(els); };
+    els.listItem.appendChild(els.checkIcon);
     // configure icon
-    configureIcon.appendChild(document.createTextNode('\u2699'));
-    configureIcon.classList.add('configure');
-    configureIcon.onclick = function() { handleConfigureTime(timeField, durationField, crossIcon, checkIcon, configureIcon); };
-    configureIcon.style.display = 'none';
-    timeTemplate.appendChild(configureIcon);
+    els.configureIcon.appendChild(document.createTextNode('\u2699'));
+    els.configureIcon.classList.add('configure');
+    els.configureIcon.onclick = function() { handleConfigureTime(els); };
+    els.configureIcon.style.display = 'none'; // only via button
+    els.listItem.appendChild(els.configureIcon);
     // error span
-    errorSpan.classList.add('error');
-    errorSpan.style.display = 'none';
-    errorSpan.onclick = function() { errorSpan.style.display = 'none'; }
-    timeTemplate.appendChild(errorSpan);
+    els.errorSpan.classList.add('error');
+    els.errorSpan.style.display = 'none';
+    els.errorSpan.onclick = function() { els.errorSpan.style.display = 'none'; }
+    els.listItem.appendChild(els.errorSpan);
 
-    timeTemplate.classList.add('timeItem');
-    return timeTemplate;
+    els.listItem.classList.add('timeItem');
+    return els;
 }
+
+function fillTimeSchedule(data) {
+    for (entry of data) {
+        let elements = generateEmptyTimeTemplate();
+        elements.configureIcon.style.display = '';
+        elements.checkIcon.style.display = 'none';
+        elements.crossIcon.style.display = 'none';
+        elements.timeField.value = entry.time;
+        elements.timeField.disabled = true;
+        elements.durationField.value = entry.durationSek;
+        elements.durationField.disabled = true;
+        list.appendChild(elements.listItem);
+    }
+} 

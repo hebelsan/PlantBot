@@ -4,12 +4,16 @@ from flask_apscheduler import APScheduler
 
 app = Flask(__name__)
 
+# watering configs
 app.config['PUMP_RELAY_PIN'] = 23
 app.config['IS_PUMPING'] = False
+app.config['PUMP_SCHEDULE'] = [{ 'time': '12:00', 'durationSek':10 }]
 
 scheduler = APScheduler()
 
-
+#
+# external routes
+#
 @app.route('/')
 def index():
     return render_template('index.html', isPumping=app.config['IS_PUMPING'])
@@ -25,8 +29,11 @@ def create():
 
 @app.route('/schedule')
 def schedule():
-    return render_template('schedule.html')
+    return render_template('schedule.html', data=app.config['PUMP_SCHEDULE'])
 
+#
+# internal routes
+#
 @app.route('/switchPumping')
 def switchPumping():
     setPumping(not app.config['IS_PUMPING'])

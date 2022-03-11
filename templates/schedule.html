@@ -4,17 +4,13 @@
 <h1>{% block title %} Daily Watering Time Schedule {% endblock %}</h1>
 
 <ul id="scheduleList">
-    <li>
-        <input type="time"></input>
-        <label>duration(sek):</label>
-        <input type="number" class="durSecInput"></input>
-        <span class="cross" onclick="handleRemoveTimeTemplate(this.parentNode)">&#10006</span> 
-        <span class="check" onclick="handleAddTime(this.parentNode)">&#10004</span> 
-    </li>
 </ul>
 
 <button onclick="handleAddTimeTemplate()" id="add-button" class="pretty-button">Add</button>
 
 
 <script src="{{ url_for('static', filename= 'js/timeSchedule.js') }}"></script>
+<script>
+    fillTimeSchedule({{ data | tojson }});
+ </script>
 {% endblock %}
