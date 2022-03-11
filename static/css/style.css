@@ -1,5 +1,43 @@
-/* Time Schedule */
+/*
+ *
+ * Time Schedule 
+ *
+ */
+/* Error Message */
+span.error {
+    padding: 5px;
+    background-color: #f44336;
+    color: white;
+    cursor: pointer;
+}
 
+span.error:hover > * {
+    color: black;
+}
+
+.closebtn {
+    margin-left: 0.75em;
+    color: white;
+    font-weight: bold;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+/* Time List */
+ #scheduleList {
+    list-style: none;
+    margin-top: 3em;
+ }
+
+ li.timeItem > * {
+    margin-left: 0.5em;
+ }
+
+ input.durSecInput {
+     width: 4em;
+ }
+
+/* Buttons */
 .pretty-button {
     margin: 10px 2px;
     padding: 5px 20px;
@@ -26,10 +64,32 @@
     background-color: #32CD32;
 }
 
-.cross {
-    color: #ff0000;
+button:disabled,
+#add-button[disabled]{
+  background-color: #cccccc;
+  color: #666666;
 }
 
-.check {
+span.cross {
+    color: #ff0000;
+    cursor: pointer;
+}
+span.cross:hover {
+    color: #c70000;
+}
+
+span.check {
     color: #00ff00;
+    cursor: pointer;
+}
+span.check:hover {
+    color: #00a800;
+}
+
+span.configure {
+    color: #000000;
+    cursor: pointer;
+}
+span.configure:hover {
+    color: #505050;
 }
