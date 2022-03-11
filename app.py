@@ -1,10 +1,13 @@
 from flask import Flask, render_template, request, url_for,  redirect
 from gpio import startPumping, stopPumping
+from flask_apscheduler import APScheduler
 
 app = Flask(__name__)
 
 app.config['PUMP_RELAY_PIN'] = 23
 app.config['IS_PUMPING'] = False
+
+scheduler = APScheduler()
 
 
 @app.route('/')
@@ -16,20 +19,16 @@ def create():
     if request.method == 'POST':
         if request.form['relay_pin']:
             pin = int(request.form['relay_pin'])
-            if pin != 0:
-                app.config['PUMP_RELAY_PIN'] = pin
-        if request.form.get('pumping'):
-            setPumping(True)
-            app.config['IS_PUMPING'] = True
-        else:
-            setPumping(False)
-            app.config['IS_PUMPING'] = False
+            app.config['PUMP_RELAY_PIN'] = pin
         return redirect(url_for('index'))
-
     return render_template('settings.html')
 
+@app.route('/schedule')
+def schedule():
+    return render_template('schedule.html')
+
 @app.route('/switchPumping')
-def your_flask_route():
+def switchPumping():
     setPumping(not app.config['IS_PUMPING'])
     return 'Sucesss', 200
 
@@ -39,3 +38,24 @@ def setPumping(value):
         stopPumping(app.config['PUMP_RELAY_PIN'])
     else:
         startPumping(app.config['PUMP_RELAY_PIN'])
+
+
+def testSchedule(durationSek):
+    print("pump for", str(durationSek), "seconds")
+
+@app.route('/removeJobs')
+def removeJobs():
+    scheduler.remove_all_jobs()
+    return 'Sucesss', 200
+
+@app.route('/addJob')
+def addJob():
+    # jobId, time, durationSeconds
+    scheduler.add_job(id='scheduleTest', func=testSchedule, trigger='interval', seconds=3)
+    return 'Sucesss', 200
+
+
+if __name__ == '__main__':
+    # scheduler.add_job(id='scheduleTest', func=testSchedule, args=[10], trigger='cron', hour=12, minute=0)
+    scheduler.start()
+    app.run(host="0.0.0.0", port=8080)

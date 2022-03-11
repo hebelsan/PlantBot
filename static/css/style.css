@@ -1,4 +1,35 @@
-img {
-    max-width: 100%;
-    height: auto;
+/* Time Schedule */
+
+.pretty-button {
+    margin: 10px 2px;
+    padding: 5px 20px;
+    border-radius: 15px;
+    background-color: #0093D5;
+    border: none;
+    color: #fff;
+    text-align: center;
+    display: inline-block;
+    font-size: small;
+    outline: none;
+}
+
+.pretty-button:focus {
+    outline: none;
+}
+
+.pretty-button:hover {
+    cursor: pointer;
+    opacity: 0.75;
+}
+
+#add-button {
+    background-color: #32CD32;
+}
+
+.cross {
+    color: #ff0000;
+}
+
+.check {
+    color: #00ff00;
 }

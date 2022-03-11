@@ -7,10 +7,10 @@ install:
 	. env/bin/activate; pip install -Ur requirements.txt
 
 debug:
-	. env/bin/activate; FLASK_APP=app.py FLASK_ENV=development flask run --host=0.0.0.0 --port=8080
+	. env/bin/activate; FLASK_APP=app.py FLASK_ENV=development flask run
 
 production:
-	. env/bin/activate; FLASK_APP=app.py FLASK_ENV=production flask run --host=0.0.0.0 --port=8080
+	. env/bin/activate; FLASK_APP=app.py FLASK_ENV=production flask run
 
 clean:
 	rm -rf env

@@ -1,22 +1,38 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<h1>{% block title %} Create a New Post {% endblock %}</h1>
+<h1>{% block title %} Settings {% endblock %}</h1>
 
 <form method="post">
-    <div class="form-group">
-        <label for="relay_pin">Pump Relay Signal Pin</label>
-        <input type="number" name="relay_pin"
-               placeholder="23" class="form-control"
-               value="{{ request.form['relay_pin'] }}"></input>
-    </div>
-
-    <div class="form-group">
-        <label for="pumping">Pumping</label>
-        <input type="checkbox" name="pumping" value="pumping" checked>
-    </div>
-    <div class="form-group">
-        <button type="submit" class="btn btn-primary">Submit</button>
-    </div>
+    <table border="0">
+        <tr>
+            <td>Pump Relay Signal Pin:</TD>
+            <td>
+                <input type="number" name="relay_pin" id="relay_pin"
+                    placeholder="23" class="form-control"
+                    value="{{ request.form['relay_pin'] }}"
+                    min="0" max="100" style="width: 5em; height: auto; padding: 0; margin-left: 1em;"></input>
+            </td>
+        </tr>
+        <tr>
+            <td>Barometric Sensor SCL Pin:</TD>
+            <td>
+                <input type="number" name="relay_pin" id="relay_pin"
+                    placeholder="4" class="form-control"
+                    value="{{ request.form['relay_pin'] }}"
+                    min="0" max="100" style="width: 5em; height: auto; padding: 0; margin-left: 1em;"></input>
+            </td>
+        </tr>
+        <tr>
+            <td>Barometric Sensor SDA Pin:</TD>
+            <td>
+              <input type="number" name="relay_pin" id="relay_pin"
+                  placeholder="5" class="form-control"
+                  value="{{ request.form['relay_pin'] }}"
+                  min="0" max="100" style="width: 5em; height: auto; padding: 0; margin-left: 1em;"></input>
+            </td>
+        </tr>
+    </table>
+    <button type="submit" class="btn btn-primary">Submit</button>
 </form>
 {% endblock %}

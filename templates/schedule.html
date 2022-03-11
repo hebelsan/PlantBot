@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h1>{% block title %} Time Schedule {% endblock %}</h1>
+
+<ul id="scheduleList">
+    <li>empty entry <span class="cross">&#10006</span> <span class="check">&#10004</span> </li>
+</ul>
+
+<button onclick="addTimeItem()" id="add-button" class="pretty-button">Add</button>
+
+
+<script src="{{ url_for('static', filename= 'js/timeSchedule.js') }}"></script>
+{% endblock %}
