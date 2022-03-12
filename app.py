@@ -1,5 +1,5 @@
 from flask import Flask, render_template, request, url_for,  redirect
-from gpio import startPumping, stopPumping
+from gpio import switchPumping
 from flask_apscheduler import APScheduler
 from scheduler import addJobToScheduler, removeJobFromSchedule, changeJobInScheduler
 
@@ -43,8 +43,8 @@ def schedule():
 # internal routes
 #
 @app.route('/switchPumping')
-def switchPumping():
-    setPumping(not app.config['IS_PUMPING'])
+def routeSwitchPumping():
+    switchPumping(app)
     return 'Sucesss', 200
 
 @app.route('/addJob', methods=['POST'])
@@ -79,13 +79,6 @@ def removeJobs():
         elif (len(d_list) == len(app.config['PUMP_SCHEDULE'])):
             return 'Job ID not found', 400
     return 'Wrong http header', 400
-
-def setPumping(value: bool):
-    app.config['IS_PUMPING'] = value
-    if app.config['IS_PUMPING'] == False:
-        stopPumping(app.config['PUMP_RELAY_PIN'])
-    else:
-        startPumping(app.config['PUMP_RELAY_PIN'])
 
 
 if __name__ == '__main__':
