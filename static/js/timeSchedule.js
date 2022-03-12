@@ -8,10 +8,18 @@ function handleAddTimeTemplate() {
     addButton.disabled = true;
 }
 
-function handleRemoveListItem(listItem) {
-    listItem.remove();
-    // TODO remove time scheduler job
-    addButton.disabled = false;
+function handleRemoveListItem(els) {
+    fetch('/removeJobs', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ 'id': els.listItem.getAttribute('id') })
+    }).then(() => {
+        els.listItem.remove();
+        addButton.disabled = false;
+    }).catch((err) => {
+        els.errorSpan.style.display = '';
+        els.errorSpan.innerHTML = err.toString() + ' <span class="closebtn">&times;</span>';
+    });
 }
 
 function handleAddTime(els) {
@@ -36,9 +44,7 @@ function handleAddTime(els) {
 
     fetch('/addJob', {
         method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ 'id': els.listItem.getAttribute('id'), 'time': els.timeField.value, 'duration': durationParsed })
     }).then(() => {
         els.crossIcon.style.display = 'none';
@@ -86,7 +92,7 @@ function generateEmptyTimeTemplate() {
     // cross icon
     els.crossIcon.appendChild(document.createTextNode('\u2716'))
     els.crossIcon.classList.add('cross');
-    els.crossIcon.onclick = function() { handleRemoveListItem(els.listItem); };
+    els.crossIcon.onclick = function() { handleRemoveListItem(els); };
     els.listItem.appendChild(els.crossIcon);
     // check icon
     els.checkIcon.appendChild(document.createTextNode('\u2714'))

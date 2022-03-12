@@ -46,10 +46,12 @@ def addJob():
         json = request.json
         matches = [d for d in app.config['PUMP_SCHEDULE'] if d['id'] == json['id']];
         if (len(matches) == 0):
+            # TODO add job to scheduler
             app.config['PUMP_SCHEDULE'].append({ 'id':json['id'], 'time':json['time'], 'durationSek':json['duration'] })
         elif (len(matches) == 1):
             matches[0]['time'] = json['time']
             matches[0]['durationSek'] = json['duration']
+            # TODO change job at scheduler
         elif (len(matches) > 1):
             return 'Something went wrong', 500
         return 'Sucesss', 200
@@ -57,8 +59,18 @@ def addJob():
 
 @app.route('/removeJobs', methods=['POST'])
 def removeJobs():
-    scheduler.remove_all_jobs()
-    return 'Sucesss', 200
+    content_type = request.headers.get('Content-Type')
+    if (content_type == 'application/json'):
+        json = request.json
+        requestID = json['id']
+        d_list = [d for d in app.config['PUMP_SCHEDULE'] if d.get('id') != requestID]
+        if (len(d_list) == len(app.config['PUMP_SCHEDULE'])-1):
+            app.config['PUMP_SCHEDULE'] = d_list
+            # TODO remove job from scheduler
+            return 'Sucesss', 200
+        elif (len(d_list) == len(app.config['PUMP_SCHEDULE'])):
+            return 'Id not found', 400
+    return 'Wrong http header', 400
 
 def setPumping(value):
     app.config['IS_PUMPING'] = value
