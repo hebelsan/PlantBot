@@ -3,6 +3,9 @@ from gpio import switchPumping
 from flask_apscheduler import APScheduler
 from scheduler import addJobToScheduler, removeJobFromSchedule, changeJobInScheduler
 
+#
+# initial setup
+#
 class Config:
     """App configuration."""
     SCHEDULER_API_ENABLED = True
