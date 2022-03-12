@@ -89,7 +89,7 @@ def setPumping(value: bool):
 
 
 if __name__ == '__main__':
-    # init existing pump job
+    # init existing pump jobs
     for entry in app.config['PUMP_SCHEDULE']:
         addJobToScheduler(scheduler, entry)
     scheduler.start()
