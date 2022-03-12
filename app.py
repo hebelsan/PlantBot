@@ -1,15 +1,23 @@
 from flask import Flask, render_template, request, url_for,  redirect
 from gpio import startPumping, stopPumping
 from flask_apscheduler import APScheduler
+from scheduler import addJobToScheduler, removeJobFromSchedule, changeJobInScheduler
+
+class Config:
+    """App configuration."""
+    SCHEDULER_API_ENABLED = True
+    SCHEDULER_TIMEZONE = "Europe/Berlin"
 
 app = Flask(__name__)
+app.config.from_object(Config())
+scheduler = APScheduler()
+scheduler.init_app(app)
 
 # watering configs
 app.config['PUMP_RELAY_PIN'] = 23
 app.config['IS_PUMPING'] = False
-app.config['PUMP_SCHEDULE'] = [{ 'id': 'initID', 'time': '12:00', 'durationSek':10 }]
+app.config['PUMP_SCHEDULE'] = [{ 'id': 'initID', 'time': '08:24', 'duration':10 }]
 
-scheduler = APScheduler()
 
 #
 # external routes
@@ -46,12 +54,12 @@ def addJob():
         json = request.json
         matches = [d for d in app.config['PUMP_SCHEDULE'] if d['id'] == json['id']];
         if (len(matches) == 0):
-            # TODO add job to scheduler
-            app.config['PUMP_SCHEDULE'].append({ 'id':json['id'], 'time':json['time'], 'durationSek':json['duration'] })
+            app.config['PUMP_SCHEDULE'].append({ 'id':json['id'], 'time':json['time'], 'duration':json['duration'] })
+            addJobToScheduler(scheduler, json)
         elif (len(matches) == 1):
             matches[0]['time'] = json['time']
-            matches[0]['durationSek'] = json['duration']
-            # TODO change job at scheduler
+            matches[0]['duration'] = json['duration']
+            changeJobInScheduler(scheduler, json)
         elif (len(matches) > 1):
             return 'Something went wrong', 500
         return 'Sucesss', 200
@@ -66,13 +74,13 @@ def removeJobs():
         d_list = [d for d in app.config['PUMP_SCHEDULE'] if d.get('id') != requestID]
         if (len(d_list) == len(app.config['PUMP_SCHEDULE'])-1):
             app.config['PUMP_SCHEDULE'] = d_list
-            # TODO remove job from scheduler
+            removeJobFromSchedule(scheduler, requestID)
             return 'Sucesss', 200
         elif (len(d_list) == len(app.config['PUMP_SCHEDULE'])):
-            return 'Id not found', 400
+            return 'Job ID not found', 400
     return 'Wrong http header', 400
 
-def setPumping(value):
+def setPumping(value: bool):
     app.config['IS_PUMPING'] = value
     if app.config['IS_PUMPING'] == False:
         stopPumping(app.config['PUMP_RELAY_PIN'])
@@ -80,11 +88,9 @@ def setPumping(value):
         startPumping(app.config['PUMP_RELAY_PIN'])
 
 
-def testSchedule(durationSek):
-    print("pump for", str(durationSek), "seconds")
-
-
 if __name__ == '__main__':
-    # scheduler.add_job(id='scheduleTest', func=testSchedule, args=[10], trigger='cron', hour=12, minute=0)
+    # init existing pump job
+    for entry in app.config['PUMP_SCHEDULE']:
+        addJobToScheduler(scheduler, entry)
     scheduler.start()
     app.run(host="0.0.0.0", port=8080)

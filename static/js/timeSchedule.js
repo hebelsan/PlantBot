@@ -124,7 +124,7 @@ function fillTimeSchedule(data) {
         elements.crossIcon.style.display = 'none';
         elements.timeField.value = entry.time;
         elements.timeField.disabled = true;
-        elements.durationField.value = entry.durationSek;
+        elements.durationField.value = entry.duration;
         elements.durationField.disabled = true;
         elements.listItem.setAttribute('id', entry.id);
         list.appendChild(elements.listItem);
