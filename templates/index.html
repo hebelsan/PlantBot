@@ -5,6 +5,30 @@
 
     <div style="text-align: center;">
         <h1>{% block title %} Welcome to PlantBot {% endblock %}</h1>
+        <table class="weather">
+            <thead>
+                <tr>
+                    <th></th>
+                    <th>Temperature</th>
+                    <th>Relative Humidty</th>
+                    <th>Air Pressure</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <th>Measured:</th>
+                    <th>Company</th>
+                    <th>Contact</th>
+                    <th>Country</th>
+                </tr>
+                <tr>
+                    <th>Internet:</th>
+                    <th id="tmp_online">{{tmp_online}} °C</th>
+                    <th id="hum_online">{{hum_online}} %</th>
+                    <th id="press_online">{{press_online}} hPa</th>
+                </tr>
+            </tbody>
+        </table>
         {% if isPumping == false %}
             <img src="{{ url_for('static', filename= 'images/water-drop-empty.svg') }}" 
                 alt="water-drop" id="water-drop" onclick="changeImage()"">
@@ -13,4 +37,6 @@
                 alt="water-drop" id="water-drop" onclick="changeImage()"">
         {% endif %}
     </div>
+
+    <script src="{{ url_for('static', filename= 'js/weather.js') }}"></script>
 {% endblock %}

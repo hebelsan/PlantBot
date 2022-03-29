@@ -10,3 +10,6 @@ RPi.GPIO==0.7.1
 typing-extensions==4.1.1
 Werkzeug==2.0.3
 zipp==3.6.0
+requests==2.27.1
+python-dotenv==0.20.0
+

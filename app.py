@@ -1,7 +1,9 @@
 from flask import Flask, render_template, request, url_for,  redirect
-from gpio import switchPumping
 from flask_apscheduler import APScheduler
-from scheduler import addJobToScheduler, removeJobFromSchedule, changeJobInScheduler
+from dotenv import load_dotenv
+from src.gpio import switchPumping
+from src.scheduler import addJobToScheduler, removeJobFromSchedule, changeJobInScheduler
+from src.weather import getCurrentWeatherOnline
 
 #
 # initial setup
@@ -12,6 +14,8 @@ class Config:
     SCHEDULER_TIMEZONE = "Europe/Berlin"
 
 def create_app(test_config=None):
+    load_dotenv()
+
     app = Flask(__name__)
     app.config.from_object(Config())
     scheduler = APScheduler()
@@ -28,7 +32,14 @@ def create_app(test_config=None):
     #
     @app.route('/')
     def index():
-        return render_template('index.html', isPumping=app.config['IS_PUMPING'])
+        w_data_online = getCurrentWeatherOnline()
+        return render_template(
+            'index.html', 
+            isPumping=app.config['IS_PUMPING'], 
+            tmp_online=w_data_online["temp"],
+            hum_online=w_data_online["humidity"],
+            press_online=w_data_online["pressure"]
+        )
 
     @app.route('/settings', methods=('GET', 'POST'))
     def create():
@@ -50,6 +61,11 @@ def create_app(test_config=None):
     def routeSwitchPumping():
         switchPumping(app)
         return 'Sucesss', 200
+    
+    @app.route('/weather')
+    def weather():
+        w_data_online = getCurrentWeatherOnline()
+        return w_data_online
 
     @app.route('/addJob', methods=['POST'])
     def addJob():
