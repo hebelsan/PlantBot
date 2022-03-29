@@ -17,15 +17,15 @@
             <tbody>
                 <tr>
                     <th>Measured:</th>
-                    <th>Company</th>
-                    <th>Contact</th>
-                    <th>Country</th>
+                    <th id="temp_sensor">{{weather.tempSensor}} °C</th>
+                    <th id="hum_sensor">{{weather.humSensor}} %</th>
+                    <th id="press_sensor">{{weather.pressSensor}} hPa</th>
                 </tr>
                 <tr>
                     <th>Internet:</th>
-                    <th id="tmp_online">{{tmp_online}} °C</th>
-                    <th id="hum_online">{{hum_online}} %</th>
-                    <th id="press_online">{{press_online}} hPa</th>
+                    <th id="temp_online">{{weather.tempOnline}} °C</th>
+                    <th id="hum_online">{{weather.humOnline}} %</th>
+                    <th id="press_online">{{weather.pressOnline}} hPa</th>
                 </tr>
             </tbody>
         </table>

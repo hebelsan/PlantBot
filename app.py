@@ -3,7 +3,7 @@ from flask_apscheduler import APScheduler
 from dotenv import load_dotenv
 from src.gpio import switchPumping
 from src.scheduler import addJobToScheduler, removeJobFromSchedule, changeJobInScheduler
-from src.weather import getCurrentWeatherOnline
+from src.weather import getWeather
 
 #
 # initial setup
@@ -32,13 +32,11 @@ def create_app(test_config=None):
     #
     @app.route('/')
     def index():
-        w_data_online = getCurrentWeatherOnline()
+        w_data = getWeather()
         return render_template(
             'index.html', 
             isPumping=app.config['IS_PUMPING'], 
-            tmp_online=w_data_online["temp"],
-            hum_online=w_data_online["humidity"],
-            press_online=w_data_online["pressure"]
+            weather=w_data
         )
 
     @app.route('/settings', methods=('GET', 'POST'))
@@ -64,8 +62,8 @@ def create_app(test_config=None):
     
     @app.route('/weather')
     def weather():
-        w_data_online = getCurrentWeatherOnline()
-        return w_data_online
+        w_data = getWeather()
+        return w_data
 
     @app.route('/addJob', methods=['POST'])
     def addJob():

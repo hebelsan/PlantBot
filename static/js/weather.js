@@ -2,10 +2,14 @@ function updateWeather() {
     console.log("updating weather..")
     fetch('/weather', { method: 'GET' })
         .then(response=>response.json())
-        .then(data=>{ 
-            document.getElementById('tmp_online').textContent = `${data.temp} °C`;
-            document.getElementById('hum_online').textContent = `${data.humidity} %`;
-            document.getElementById('press_online').textContent = `${data.pressure} hPa`;
+        .then(data=>{
+            document.getElementById('temp_online').textContent = `${data.tempOnline} °C`;
+            document.getElementById('hum_online').textContent = `${data.humOnline} %`;
+            document.getElementById('press_online').textContent = `${data.pressOnline} hPa`;
+
+            document.getElementById('temp_online').textContent = `${data.tempOnline} °C`;
+            document.getElementById('hum_online').textContent = `${data.humOnline} %`;
+            document.getElementById('press_online').textContent = `${data.pressOnline} hPa`;
         })
         .catch((err) => { console.log(err); });
 }
