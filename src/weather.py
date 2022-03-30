@@ -1,9 +1,23 @@
 import os
 import requests
 
-def getWeather():
+
+def initBme280():
+    if os.getenv('FLASK_ENV') == "production":
+        import board
+        from adafruit_bme280 import basic as adafruit_bme280
+        i2c = board.I2C()   # uses board.SCL and board.SDA
+        bme280 = adafruit_bme280.Adafruit_BME280_I2C(i2c)
+        bme280.sea_level_pressure = 1013.25
+        return bme280
+    else:
+        return None
+
+
+
+def getWeather(bme280=None):
     w_data_online = getWeatherOnline()
-    w_data_sensor = getWeatherSensor(os.getenv('FLASK_ENV'))
+    w_data_sensor = getWeatherSensor(bme280)
     return {**w_data_online, **w_data_sensor}
 
 def getWeatherOnline(city="Emmendingen"):
@@ -26,8 +40,8 @@ def getWeatherOnline(city="Emmendingen"):
             "humOnline": 0,
         }
 
-def getWeatherSensor(FLASK_ENV="development"):
-    if FLASK_ENV == "development":
+def getWeatherSensor(bme280):
+    if bme280 == None:
         return {
             "tempSensor": 42,
             "pressSensor": 42,
@@ -36,8 +50,8 @@ def getWeatherSensor(FLASK_ENV="development"):
     else:
         # TODO
         return {
-            "tempSensor": 0,
-            "pressSensor": 0,
-            "humSensor": 0
+            "tempSensor": bme280.temperature,
+            "pressSensor": bme280.relative_humidity,
+            "humSensor":  bme280.pressure
         }
 

@@ -1,9 +1,9 @@
 from flask import Flask, render_template, request, url_for,  redirect
 from flask_apscheduler import APScheduler
 from dotenv import load_dotenv
-from src.gpio import switchPumping
+from src.pump import switchPumping
 from src.scheduler import addJobToScheduler, removeJobFromSchedule, changeJobInScheduler
-from src.weather import getWeather
+from src.weather import getWeather, initBme280
 
 #
 # initial setup
@@ -15,6 +15,8 @@ class Config:
 
 def create_app(test_config=None):
     load_dotenv()
+
+    bme280 = initBme280()
 
     app = Flask(__name__)
     app.config.from_object(Config())
@@ -32,7 +34,7 @@ def create_app(test_config=None):
     #
     @app.route('/')
     def index():
-        w_data = getWeather()
+        w_data = getWeather(bme280)
         return render_template(
             'index.html', 
             isPumping=app.config['IS_PUMPING'], 
@@ -62,7 +64,7 @@ def create_app(test_config=None):
     
     @app.route('/weather')
     def weather():
-        w_data = getWeather()
+        w_data = getWeather(bme280)
         return w_data
 
     @app.route('/addJob', methods=['POST'])
