@@ -48,10 +48,9 @@ def getWeatherSensor(bme280):
             "humSensor": 42
         }
     else:
-        # TODO
         return {
-            "tempSensor": bme280.temperature,
-            "humSensor": bme280.relative_humidity,
-            "pressSensor":  bme280.pressure
+            "tempSensor": "{%0.1f}".format(bme280.temperature),
+            "humSensor": "{%0.1f}".format(bme280.relative_humidity),
+            "pressSensor": "{%0.1f}".format(bme280.pressure)
         }
 
