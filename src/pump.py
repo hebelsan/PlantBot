@@ -3,7 +3,7 @@ import os
 if os.getenv('FLASK_ENV') == "production":
     import RPi.GPIO as GPIO
 
-def switchPumping(app: object):
+def switchPump(app: object):
     app.config['IS_PUMPING'] = not app.config['IS_PUMPING']
     if app.config['IS_PUMPING'] == False:
         stopPumping(app.config['PUMP_RELAY_PIN'])

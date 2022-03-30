@@ -1,7 +1,7 @@
 from flask import Flask, render_template, request, url_for,  redirect
 from flask_apscheduler import APScheduler
 from dotenv import load_dotenv
-from src.pump import switchPumping
+from src.pump import switchPump
 from src.scheduler import addJobToScheduler, removeJobFromSchedule, changeJobInScheduler
 from src.weather import getWeather, initBme280
 
@@ -59,7 +59,7 @@ def create_app(test_config=None):
     #
     @app.route('/switchPumping')
     def routeSwitchPumping():
-        switchPumping(app)
+        switchPump(app)
         return 'Sucesss', 200
     
     @app.route('/weather')
