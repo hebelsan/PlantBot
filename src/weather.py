@@ -30,8 +30,8 @@ def getWeatherOnline(city="Emmendingen"):
         data = x["main"]
         return {
             "tempOnline": data["temp"],
-            "pressOnline": data["humidity"],
-            "humOnline": data["pressure"],
+            "humOnline": data["humidity"],
+            "pressOnline": data["pressure"],
         }
     else:
         return {
@@ -51,7 +51,7 @@ def getWeatherSensor(bme280):
         # TODO
         return {
             "tempSensor": bme280.temperature,
-            "pressSensor": bme280.relative_humidity,
-            "humSensor":  bme280.pressure
+            "humSensor": bme280.relative_humidity,
+            "pressSensor":  bme280.pressure
         }
 
