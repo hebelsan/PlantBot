@@ -26,4 +26,4 @@ def stopPumping(pinNumber):
         GPIO.output(pinNumber, GPIO.HIGH)
         GPIO.cleanup()
     else:
-        print("stop pumpin")
+        print("stop pumping")
