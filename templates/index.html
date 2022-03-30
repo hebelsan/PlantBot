@@ -4,31 +4,35 @@
     <script src="{{ url_for('static', filename= 'js/index.js') }}"></script>
 
     <div style="text-align: center;">
-        <h1>{% block title %} Welcome to PlantBot {% endblock %}</h1>
-        <table class="weather">
-            <thead>
+        <h1>{% block title %} PlantBot {% endblock %}</h1>
+        <div class="table-responsive">
+        <table class="table">
+            <thead class="thead-dark">
                 <tr>
-                    <th></th>
-                    <th>Temperature</th>
-                    <th>Humidty</th>
-                    <th>Air Pressure</th>
+                    <th scope="col">#</th>
+                    <th scope="col">Internet</th>
+                    <th scope="col">Sensor</th>
                 </tr>
             </thead>
             <tbody>
                 <tr>
-                    <th>Measured:</th>
-                    <th id="temp_sensor">{{weather.tempSensor}} °C</th>
-                    <th id="hum_sensor">{{weather.humSensor}} %</th>
-                    <th id="press_sensor">{{weather.pressSensor}} hPa</th>
+                    <th scope="row">Temperature:</th>
+                    <td id="temp_online">{{weather.tempOnline}} °C</td>
+                    <td id="temp_sensor">{{weather.tempSensor}} °C</td>
                 </tr>
                 <tr>
-                    <th>Internet:</th>
-                    <th id="temp_online">{{weather.tempOnline}} °C</th>
-                    <th id="hum_online">{{weather.humOnline}} %</th>
-                    <th id="press_online">{{weather.pressOnline}} hPa</th>
+                    <th scope="row">Humidty:</th>
+                    <td id="hum_online">{{weather.humOnline}} %</td>
+                    <td id="hum_sensor">{{weather.humSensor}} %</td>
+                </tr>
+                <tr>
+                    <th scope="row">Air Pressure:</th>
+                    <td id="press_online">{{weather.pressOnline}} hPa</td>
+                    <td id="press_sensor">{{weather.pressSensor}} hPa</td>
                 </tr>
             </tbody>
         </table>
+    </div>
         {% if isPumping == false %}
             <img src="{{ url_for('static', filename= 'images/water-drop-empty.svg') }}" 
                 alt="water-drop" id="water-drop" onclick="changeImage()"">
